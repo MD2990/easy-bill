@@ -1,10 +1,9 @@
-const mongoose = require('mongoose');
+import { Schema, models, model } from 'mongoose';
 
-const NoteSchema = new mongoose.Schema({
+const NoteSchema = new Schema({
 	title: {
 		type: String,
 		required: [true, 'Please add a title'],
-
 		maxlength: [40, 'Title cannot be more than 40 characters'],
 	},
 	description: {
@@ -14,4 +13,4 @@ const NoteSchema = new mongoose.Schema({
 	},
 });
 
-module.exports = mongoose.models.Note || mongoose.model('Note', NoteSchema);
+export default models.nextdb || model('nextdb', NoteSchema);

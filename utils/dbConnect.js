@@ -1,20 +1,25 @@
 import mongoose from 'mongoose';
-const db = require('./keys').mongoURI;
+const DB = process.env.DB;
+let isConnected = false;
 
 async function dbConnect() {
-	await mongoose
-		.connect(db, {
-			useNewUrlParser: true,
-			useCreateIndex: true,
-			useFindAndModify: true,
-			// eslint-disable-next-line no-dupe-keys
-			useCreateIndex: true,
-			useUnifiedTopology: true,
-			// eslint-disable-next-line no-dupe-keys
-			useFindAndModify: false,
-		})
-		.then(() => console.log('MongoDB Connected'))
-		.catch((err) => console.log(err));
+	if (!isConnected) {
+		console.log(`Connecting to ${DB} ... `);
+		await mongoose
+			.connect(DB, {
+				useNewUrlParser: true,
+				useCreateIndex: true,
+				useFindAndModify: true,
+				useCreateIndex: true,
+				useUnifiedTopology: true,
+				useFindAndModify: false,
+			})
+			.then(() => {
+				isConnected = true;
+				console.log('MongoDB Connected');
+			})
+			.catch((err) => console.log(err));
+	}
 }
 
 export default dbConnect;
