@@ -2,6 +2,8 @@ import Head from 'next/head';
 import styles from '../styles/Home.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Row, Col, Container, ProgressBar } from 'react-bootstrap';
+import PurchaseOrder from '../components/PurchaseOrder';
+import Basic from '../components/Basic';
 
 export default function Home() {
 	return (
@@ -10,8 +12,8 @@ export default function Home() {
 				<title>Create Next App</title>
 				<link rel='icon' href='/favicon.ico' />
 			</Head>
-
-			<Container>
+			<Basic></Basic>
+			{/* 	<Container>
 				<Row className='justify-content-md-center border border-black '>
 					<Col xs>1 of 3</Col>
 					<Col>2 of 3</Col>
@@ -22,7 +24,7 @@ export default function Home() {
 					<Col>2 of 3</Col>
 					<Col>3 of 3</Col>
 				</Row>
-			</Container>
+			</Container> */}
 			{/* 	{ <div className={styles.container}>
 				<Button variant='primary' onClick={() => alert('Hi')}>
 					{' '}
