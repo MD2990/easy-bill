@@ -8,7 +8,6 @@
     "start": "next start"
   },
   "dependencies": {
-    "bootstrap": "^4.6.0",
     "dotenv": "^8.2.0",
     "formik": "^2.2.6",
     "mongoose": "^5.11.13",
@@ -16,6 +15,14 @@
     "react": "17.0.1",
     "react-bootstrap": "^1.4.3",
     "react-dom": "17.0.1",
+    "reactstrap": "^8.9.0",
+    "tailwind-react-ui": "^0.8.1",
     "yup": "^0.32.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss7-compat": "^2.0.2",
+    "autoprefixer": "^10.2.4",
+    "postcss": "^8.2.4",
+    "tailwindcss": "^2.0.2"
   }
 }
