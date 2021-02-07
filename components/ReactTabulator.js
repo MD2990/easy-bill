@@ -1,4 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
+import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory, {
@@ -6,67 +7,29 @@ import paginationFactory, {
 	PaginationTotalStandalone,
 	PaginationListStandalone,
 } from 'react-bootstrap-table2-paginator';
+
+const { SearchBar } = Search;
+
 const products = [
 	{
 		id: 155,
-		name: 'majidahmed',
-		price: 1500.0,
+		name: 'majid ahmed',
+		price: 2000,
 	},
 	{
 		id: 659,
-		name: 'majidahmed',
-		price: 1500.0,
+		name: 'salem mazin',
+		price: 1500,
 	},
 	{
-		id: 968,
-		name: 'majidahmed',
-		price: 1500.0,
+		id: 32,
+		name: 'salem mazin',
+		price: 1500,
 	},
 	{
-		id: 695,
-		name: 'majidahmed',
-		price: 1500.0,
-	},
-	{
-		id: 987,
-		name: 'majidahmed',
-		price: 1500.0,
-	},
-	{
-		id: 842,
-		name: 'majidahmeda',
-		price: 1500.0,
-	},
-	{
-		id: 9616,
-		name: 'majidahmesd',
-		price: 1500.0,
-	},
-	{
-		id: 9817,
-		name: 'majidahmeds',
-		price: 1500.0,
-	},
-	{
-		id: 11,
-		name: 'majid salems',
-		price: 1500.0,
-	},
-	{ id: 11, name: 'majid smazin', price: 1500.0 },
-	{
-		id: 13,
-		name: 'majid mazins',
-		price: 1500.0,
-	},
-	{
-		id: 144,
-		name: 'majid mazina',
-		price: 1500.0,
-	},
-	{
-		id: 344,
-		name: 'majid wmazin',
-		price: 1500.0,
+		id: 21,
+		name: 'salem mazin',
+		price: 1500,
 	},
 ];
 const columns = [
@@ -74,41 +37,54 @@ const columns = [
 		dataField: 'id',
 		text: 'Product ID',
 		sort: true,
+		footer: `Total Items:${products.length} `,
 	},
 	{
 		dataField: 'name',
 		text: 'Product Name',
 		sort: true,
+		footer: 'Footer 2',
 	},
 	{
 		dataField: 'price',
 		text: 'Product Price',
-		sort: true,
+		footerTitle: (column, colIndex) =>
+			`this is custom title for ${column.text}`,
+
+		footer: (columnData) =>
+			'$$ ' + columnData.reduce((acc, item) => acc + item, 0),
 	},
 ];
-
+function priceFormatter(column, colIndex, { text }) {
+	//(columnData) => columnData.reduce((acc, item) => acc + item, 0);
+	return (
+		<>
+			<h5>
+				<strong>$$ {column.footer.text} $$</strong>
+			</h5>
+		</>
+	);
+}
 const options = {
 	custom: true,
 	totalSize: products.length,
 };
 
+const selectRow = {
+	mode: 'checkbox',
+	clickToSelect: true,
+	onSelect: (row, isSelect, rowIndex, e) => {
+		console.log(row.id);
+		console.log(isSelect);
+		console.log(rowIndex);
+	},
+	onSelectAll: (isSelect, rows, e) => {
+		console.log(isSelect);
+		console.log(rows);
+	},
+};
 const MyTable = () => (
-	<>
-		<PaginationProvider pagination={paginationFactory(options)}>
-			{({ paginationProps, paginationTableProps }) => (
-				<div>
-					<PaginationTotalStandalone {...paginationProps} />
-					<PaginationListStandalone {...paginationProps} />
-					<BootstrapTable
-						keyField='id'
-						data={products}
-						columns={columns}
-						{...paginationTableProps}
-					/>
-				</div>
-			)}
-		</PaginationProvider>
-	</>
+	<BootstrapTable keyField='id' data={products} columns={columns} />
 );
 
 export default MyTable;
