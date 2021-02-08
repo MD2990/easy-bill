@@ -1,37 +1,34 @@
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
-
 import BootstrapTable from 'react-bootstrap-table-next';
-import paginationFactory, {
-	PaginationProvider,
-	PaginationTotalStandalone,
-	PaginationListStandalone,
-} from 'react-bootstrap-table2-paginator';
+import paginationFactory from 'react-bootstrap-table2-paginator';
 
-const { SearchBar } = Search;
+var Chance = require('chance');
+var chance = new Chance();
 
-const products = [
-	{
-		id: 155,
-		name: 'majid ahmed',
-		price: 2000,
-	},
-	{
-		id: 659,
-		name: 'salem mazin',
-		price: 1500,
-	},
-	{
-		id: 32,
-		name: 'salem mazin',
-		price: 1500,
-	},
-	{
-		id: 21,
-		name: 'salem mazin',
-		price: 1500,
-	},
-];
+// Instantiate Chance so it can be used
+
+// Use Chance here.
+
+//console.log(my_random_string);
+
+const products = [];
+for (let index = 0; index < 100; index++) {
+	let my_random_string = chance.name();
+	let my_random_price = chance.floating({ min: 0, max: 100, fixed: 4 });
+	let my_random_number = chance.integer({ min: 10, max: 999999 });
+
+	products.push({
+		id: my_random_number,
+		name: my_random_string,
+		price: my_random_price,
+	});
+
+	//	products.push(my_random_string);
+	//products.push(my_random_number);
+}
+
 const columns = [
 	{
 		dataField: 'id',
@@ -47,6 +44,7 @@ const columns = [
 	},
 	{
 		dataField: 'price',
+		sort: true,
 		text: 'Product Price',
 		footerTitle: (column, colIndex) =>
 			`this is custom title for ${column.text}`,
@@ -55,36 +53,52 @@ const columns = [
 			'$$ ' + columnData.reduce((acc, item) => acc + item, 0),
 	},
 ];
-function priceFormatter(column, colIndex, { text }) {
-	//(columnData) => columnData.reduce((acc, item) => acc + item, 0);
+
+const defaultSorted = [
+	{
+		dataField: 'id',
+		order: 'asc',
+	},
+];
+
+const MyTable = () => {
 	return (
 		<>
-			<h5>
-				<strong>$$ {column.footer.text} $$</strong>
-			</h5>
+			<BootstrapTable
+				bootstrap4
+				id='my-table'
+				keyField='id'
+				data={products}
+				columns={columns}
+				defaultSorted={defaultSorted}
+				pagination={paginationFactory()}
+			/>
+			<button
+				className='btn btn-lg btn-success justify-items-center '
+				onClick={() => print()}>
+				Print this out!
+			</button>
 		</>
 	);
-}
-const options = {
-	custom: true,
-	totalSize: products.length,
 };
 
-const selectRow = {
-	mode: 'checkbox',
-	clickToSelect: true,
-	onSelect: (row, isSelect, rowIndex, e) => {
-		console.log(row.id);
-		console.log(isSelect);
-		console.log(rowIndex);
-	},
-	onSelectAll: (isSelect, rows, e) => {
-		console.log(isSelect);
-		console.log(rows);
-	},
-};
-const MyTable = () => (
-	<BootstrapTable keyField='id' data={products} columns={columns} />
-);
+function print() {
+	/* 	doc.autoTable({
+		head: [['Name', 'Email', 'Country']],
+		body: [
+			['David', 'david@example.com', 'Sweden'],
+			['Castille', 'castille@example.com', 'Spain'],
+			// ...
+		],
+	});
+	doc.save('table.pdf'); */
+
+	const doc = new jsPDF();
+	doc.autoTable({
+		styles: { fillColor: [255, 0, 0] },
+		html: '#my-table',
+	});
+	doc.save('table.pdf');
+}
 
 export default MyTable;
