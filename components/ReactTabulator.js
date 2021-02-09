@@ -3,6 +3,8 @@ import 'jspdf-autotable';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
+import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
+const { SearchBar, ClearSearchButton } = Search;
 
 var Chance = require('chance');
 var chance = new Chance();
@@ -14,19 +16,17 @@ var chance = new Chance();
 //console.log(my_random_string);
 
 const products = [];
-for (let index = 0; index < 100; index++) {
+
+for (let index = 0; index < 999999; index++) {
 	let my_random_string = chance.name();
 	let my_random_price = chance.floating({ min: 0, max: 100, fixed: 4 });
 	let my_random_number = chance.integer({ min: 10, max: 999999 });
 
 	products.push({
-		id: my_random_number,
+		id: index,
 		name: my_random_string,
 		price: my_random_price,
 	});
-
-	//	products.push(my_random_string);
-	//products.push(my_random_number);
 }
 
 const columns = [
@@ -64,15 +64,31 @@ const defaultSorted = [
 const MyTable = () => {
 	return (
 		<>
-			<BootstrapTable
-				bootstrap4
-				id='my-table'
-				keyField='id'
-				data={products}
-				columns={columns}
-				defaultSorted={defaultSorted}
-				pagination={paginationFactory()}
-			/>
+			<ToolkitProvider keyField='id' data={products} columns={columns} search>
+				{(props) => (
+					<div>
+						<h3>Input something at below input field:</h3>
+						<SearchBar {...props.searchProps} />
+						<ClearSearchButton {...props.searchProps} />
+						<hr />
+						<BootstrapTable
+							{...props.baseProps}
+							bootstrap4
+							id='my-table'
+							keyField='id'
+							data={products}
+							columns={columns}
+							defaultSorted={defaultSorted}
+							pagination={paginationFactory()}
+						/>
+					</div>
+				)}
+			</ToolkitProvider>
+
+			{/* <BootstrapTable
+			
+			/> */}
+
 			<button
 				className='btn btn-lg btn-success justify-items-center '
 				onClick={() => print()}>
