@@ -2,41 +2,41 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import Chance from 'chance';
 import cellEditFactory from 'react-bootstrap-table2-editor';
-
 import 'bootstrap/dist/css/bootstrap.min.css';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
+import { useState, useEffect } from 'react';
+
+import data from '../Data';
 const { SearchBar, ClearSearchButton } = Search;
 
-const products = [];
-
-const chance = new Chance();
+/* const chance = new Chance();
 
 for (let index = 0; index < 15; index++) {
 	const my_random_string = chance.name();
 	const my_random_price = chance.integer({ min: 0, max: 50, fixed: 0 });
 	//const my_random_number = chance.integer({ min: 10, max: 999999 });
 
-	products.push({
+	data.push({
 		id: index + 1,
 		name: my_random_string,
 		price: index + 15,
 	});
-}
+} */
 
-let total = products.reduce((acc, pilot) => acc + pilot.price, 0);
+let total = parseFloat(data.reduce((acc, pilot) => acc + pilot.price, 0));
 
 const columns = [
 	{
 		dataField: 'id',
 		text: 'Product ID',
 		sort: true,
-		footer: `Total Items:${products.length} `,
+		footer: `Total Items:${data.length} `,
 	},
 	{
-		dataField: 'name',
-		text: 'Product Name',
+		dataField: 'product',
+		text: 'Product',
 		sort: true,
 		footer: 'Footer 2',
 	},
@@ -47,16 +47,12 @@ const columns = [
 		/* 	footerTitle: (column, colIndex) =>
 			`this is custom title for ${column.text}`, */
 
-		footer: (columnData) => columnData.reduce((acc, item) => acc + item, 0),
+		footer: priceFormatter,
 	},
 ];
 
 function priceFormatter(column, colIndex, { text }) {
-	return (
-		<h5>
-			<strong>$$ {(column.text = total)} $$</strong>
-		</h5>
-	);
+	return parseFloat(data.reduce((acc, pilot) => acc + pilot.price, 0));
 }
 function beforeSaveCell(oldValue, newValue, row, column, done) {
 	setTimeout(() => {
@@ -78,7 +74,7 @@ const defaultSorted = [
 const MyTable = () => {
 	return (
 		<>
-			<ToolkitProvider keyField='id' data={products} columns={columns} search>
+			<ToolkitProvider keyField='id' data={data} columns={columns} search>
 				{(props) => (
 					<div>
 						<h3>Input something at below input field:</h3>
@@ -90,7 +86,7 @@ const MyTable = () => {
 							bootstrap4
 							id='my-table'
 							keyField='id'
-							data={products}
+							data={data}
 							columns={columns}
 							defaultSorted={defaultSorted}
 							pagination={paginationFactory()}
@@ -102,7 +98,12 @@ const MyTable = () => {
 								beforeSaveCell: (oldValue, newValue, row, column) => {
 									console.log('Before Saving Cell!!');
 								},
-								afterSaveCell: (oldValue, newValue, row, columnm) => {},
+								afterSaveCell: (oldValue, newValue, row, columnm) => {
+									//ToDo: Add fetch post req
+									let ss = data.indexOf(row);
+									data[ss].price = 1500;
+									console.log(data[ss].price);
+								},
 							})}
 						/>
 					</div>
@@ -129,7 +130,7 @@ function print() {
 	const key = [['id', 'name', 'price']];
 	doc.autoTable({
 		head: key,
-		body: products.map((x) => Object.values(x)),
+		body: data.map((x) => Object.values(x)),
 	});
 	doc.save('table.pdf');
 	/* 
