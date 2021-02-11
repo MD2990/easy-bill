@@ -25,7 +25,8 @@ for (let index = 0; index < 15; index++) {
 	});
 } */
 
-let total = parseFloat(data.reduce((acc, pilot) => acc + pilot.price, 0));
+const newTotal = () =>
+	parseFloat(data.reduce((acc, item) => acc + item.amount, 0).toFixed(6));
 
 const columns = [
 	{
@@ -39,21 +40,67 @@ const columns = [
 		text: 'Product',
 		sort: true,
 		footer: 'Footer 2',
+		editable: false,
+		footer: 'newTotal',
 	},
+
 	{
 		dataField: 'price',
 		sort: true,
 		text: 'Product Price',
+		type: 'number',
+		//editable: false,
+
+		footer: 'newTotal',
+	},
+	{
+		dataField: 'quantity',
+		sort: true,
+		text: 'Quantity',
+		type: 'number',
+		/* 	footerTitle: (column, colIndex) =>
+		`this is custom title for ${column.text}`, */
+		footer: 'newTotal',
+
+		//footerFormatter: priceFormatter
+	},
+	{
+		dataField: 'amount',
+		sort: true,
+		text: 'Amount',
+		type: 'number',
+		editable: false,
+		footer: priceFormatter,
+
 		/* 	footerTitle: (column, colIndex) =>
 			`this is custom title for ${column.text}`, */
+		//footer: newTotal,
+		//footerFormatter: priceFormatter
+	},
+	{
+		dataField: 'discount',
+		sort: true,
+		text: 'Discount',
+		type: 'number',
+		/* 	footerTitle: (column, colIndex) =>
+			`this is custom title for ${column.text}`, */
+		footer: 'newTotal',
 
-		footer: priceFormatter,
+		//footerFormatter: priceFormatter
 	},
 ];
 
 function priceFormatter(column, colIndex, { text }) {
-	return parseFloat(data.reduce((acc, pilot) => acc + pilot.price, 0));
+	return (
+		<h5>
+			<strong>$$ {newTotal()} $$</strong>
+		</h5>
+	);
 }
+/* function priceFormatter() {
+	return newTotal();
+} */
+
 function beforeSaveCell(oldValue, newValue, row, column, done) {
 	setTimeout(() => {
 		if (confirm('Do you want to accep this change?')) {
@@ -72,6 +119,8 @@ const defaultSorted = [
 ];
 
 const MyTable = () => {
+	const [count, setCount] = useState(newTotal);
+
 	return (
 		<>
 			<ToolkitProvider keyField='id' data={data} columns={columns} search>
@@ -92,20 +141,32 @@ const MyTable = () => {
 							pagination={paginationFactory()}
 							cellEdit={cellEditFactory({
 								mode: 'click',
-								onStartEdit: (row, column, rowIndex, columnIndex) => {
-									console.log('start to edit!!!');
-								},
-								beforeSaveCell: (oldValue, newValue, row, column) => {
-									console.log('Before Saving Cell!!');
-								},
-								afterSaveCell: (oldValue, newValue, row, columnm) => {
-									//ToDo: Add fetch post req
-									let ss = data.indexOf(row);
-									data[ss].price = 1500;
-									console.log(data[ss].price);
-								},
+								onStartEdit: (row, column, rowIndex, columnIndex) => {},
+								beforeSaveCell: beforeSaveCell,
+								afterSaveCell: (oldValue, newValue, rowIndex, columnIndex) => {
+									newTotal;
+									setCount(newTotal);
+
+									/* setCount(newValue);
+									return (columnData) =>
+										columnData.reduce((acc, item) => acc + item, 0); */
+								} /* (oldValue, newValue, row, column, done) =>  */,
+
+								//total = parseFloat(data.reduce((acc, pilot) => acc + pilot.price, 0));
+
+								//co();
+
+								//ToDo: Add fetch post req
+								/* 	 	let ss = data.indexOf(row);
+									data[ss].price = newValue;
+									console.log(data[ss].price);  */
+
+								//console.log(count);
+
+								//console.log(count);
 							})}
 						/>
+						<h1>{count}</h1>
 					</div>
 				)}
 			</ToolkitProvider>
